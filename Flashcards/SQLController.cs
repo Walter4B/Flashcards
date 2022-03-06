@@ -2,7 +2,7 @@
 {
     internal class SQLController
     {
-
+        FlashcardsController flashcardController = new FlashcardsController();
         internal void CreateFlashcardStack()
         { }
 
@@ -26,5 +26,10 @@
 
         internal void UpdateFlashcardInStack()
         { }
+
+        internal void StudySession()
+        {
+            int score = flashcardController.TestSkill(); //TODO
+        }
     }
 }

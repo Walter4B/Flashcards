@@ -41,6 +41,9 @@
                     case 8:
                         sqlController.UpdateFlashcardInStack();
                         break;
+                    case 9:
+                        sqlController.StudySession();
+                        break;
 
                 }
             }
@@ -56,7 +59,7 @@
                     score++;
             }
 
-            return score;
+            return score; //crate date and score table
         }
 
         internal void PullStackOfFlashcards()
