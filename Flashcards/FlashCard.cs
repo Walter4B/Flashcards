@@ -9,5 +9,9 @@
         public string FlashcardFront { get; set; }
 
         public string FlashcardBack { get; set; }
+
+        public string DateTimeCreation { get; set; }
+
+        public string DateTimeEdit { get; set; }
     }
 }

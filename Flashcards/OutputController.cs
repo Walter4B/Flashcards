@@ -17,7 +17,7 @@ namespace Flashcards
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("Flashcards/appsettings.json");
-            return builder.Build();
+            return (builder.Build());
         }
     }
 }

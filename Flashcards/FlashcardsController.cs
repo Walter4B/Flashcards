@@ -18,28 +18,28 @@
                         programRunning = false;
                         break;
                     case 1:
-                        sqlController.CreateFlashcardStack();
+                        sqlController.SQLConnectionCall(sqlController.CreateFlashcardStack);
                         break;
                     case 2:
-                        sqlController.CreateFlashCard();
+                        sqlController.SQLConnectionCall(sqlController.CreateFlashCard);
                         break;
                     case 3:
-                        sqlController.DeleteFlashcardStack();
+                        sqlController.SQLConnectionCall(sqlController.DeleteFlashcardStack);
                         break;
                     case 4:
-                        sqlController.DeleteFlashCard();
+                        sqlController.SQLConnectionCall(sqlController.DeleteFlashCard);
                         break;
                     case 5:
-                        sqlController.ShowStacks();
+                        sqlController.SQLConnectionCall(sqlController.ShowStacks);
                         break;
                     case 6:
-                        sqlController.ShowFlashcardsInStack();
+                        sqlController.SQLConnectionCall(sqlController.ShowFlashcardsInStack);
                         break;
                     case 7:
-                        sqlController.UpdateStack();
+                        sqlController.SQLConnectionCall(sqlController.UpdateStack);
                         break;
                     case 8:
-                        sqlController.UpdateFlashcardInStack();
+                        sqlController.SQLConnectionCall(sqlController.UpdateFlashcardInStack);
                         break;
                     case 9:
                         sqlController.StudySession();
@@ -64,6 +64,15 @@
 
         internal void PullStackOfFlashcards()
         { 
+
+        }
+
+        internal string GetCurrentDateTime()
+        {
+            DateTime currentDateTime = DateTime.Now;
+            string currentDateTimeString = currentDateTime.ToString();
+
+            return currentDateTimeString;
         }
     }
 }
