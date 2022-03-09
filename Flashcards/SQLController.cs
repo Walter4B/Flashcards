@@ -11,6 +11,7 @@ namespace Flashcards
         FlashcardsController flashcardController = new FlashcardsController();
         OutputController outputController = new OutputController(); 
         InputController inputController = new InputController();
+        TableVisualisationEngine tableVisualisationEngine = new TableVisualisationEngine();
 
         internal void SQLConnectionCall(Action<SqlCommand> functionToPass)
         {
@@ -19,7 +20,7 @@ namespace Flashcards
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     connection.Open();
-                    functionToPass(command);
+                    //functionToPass(command);
                     connection.Close();
                 }
             }
@@ -44,7 +45,7 @@ namespace Flashcards
         {
             outputController.DisplayMessage("DeleteStackInstruction");
             string userInput = inputController.GetUserInputString();
-            command.CommandText = $"DELETE TABLE IF EXISTS '{userInput}'(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FrontOfCard TEXT NOT NULL, BackOfCard TEXT NOT NULL, CreationDate TEXT NOT NULL, EditDate TEXT NOT NULL)";
+            command.CommandText = $"DELETE TABLE IF EXISTS '{userInput}'";
             command.CommandText = $"DELETE FROM StackTable WHERE ListOfStacks = '{userInput}';";
             command.ExecuteNonQuery();
         }
@@ -73,13 +74,9 @@ namespace Flashcards
 
         internal void ShowStacks(SqlCommand command)
         {
-            command.CommandText = $"DELETE FROM '{userInputStack}' WHERE ID = '{userInputFlashCard}';";
-            command.ExecuteNonQuery();
-        }
-
-        internal void ShowFlashcardsInStack(SqlCommand command)
-        {
-            string CommandText = $"SELECT * FROM CodingTable";
+            outputController.DisplayMessage("ChoseStack");
+            string userInput = inputController.GetUserInputString();
+            string CommandText = $"SELECT * FROM StackTable";
             command.CommandText = CommandText;
             using (SqlDataReader sqlDataReader = command.ExecuteReader())
             {
@@ -89,7 +86,25 @@ namespace Flashcards
                 {
                     tableData.Add(new List<object> { sqlDataReader.GetInt32(0), sqlDataReader.GetString(1), sqlDataReader.GetString(2), sqlDataReader.GetString(3) });
                 }
-                tableVisualisationEngine.DisplayTable(tableData);
+                tableVisualisationEngine.DisplayFlashcardsInStack(tableData);
+            }
+        }
+
+        internal void ShowFlashcardsInStack(SqlCommand command)
+        {
+            outputController.DisplayMessage("ChoseStack");
+            string userInput = inputController.GetUserInputString();
+            string CommandText = $"SELECT * FROM '{userInput}'";
+            command.CommandText = CommandText;
+            using (SqlDataReader sqlDataReader = command.ExecuteReader())
+            {
+                var tableData = new List<List<object>> { };
+
+                while (sqlDataReader.Read())
+                {
+                    tableData.Add(new List<object> { sqlDataReader.GetInt32(0), sqlDataReader.GetString(1), sqlDataReader.GetString(2), sqlDataReader.GetString(3) });
+                }
+                tableVisualisationEngine.DisplayFlashcardsInStack(tableData);
             }
         }
 
@@ -98,7 +113,13 @@ namespace Flashcards
 
         internal void UpdateFlashcardInStack(SqlCommand command)
         {
-            command.CommandText = $"UPDATE CodingTable SET StartTime ='{startDateTime}', EndTime ='{endDateTime}', RunTime ='{duration}' WHERE ID = '{id}'";
+            FlashCard flashcard = new FlashCard();
+            outputController.DisplayMessage("UpdateChoseFlashcard");
+            string frontOfCard = inputController.GetUserInputString();
+            outputController.DisplayMessage("");
+            string backOfCard = inputController.GetUserInputString();
+            string editDate = flashcardController.GetCurrentDateTime();
+            command.CommandText = $"UPDATE CodingTable SET FrontOfCard ='{frontOfCard}', BackOfCard ='{backOfCard}', EditDate ='{editDate}'";
             command.ExecuteNonQuery();
         }
 
