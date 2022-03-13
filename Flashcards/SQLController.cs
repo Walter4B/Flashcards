@@ -8,7 +8,7 @@ namespace Flashcards
     internal class SQLController 
     {
         private string connectionString = ConfigurationManager.ConnectionStrings["connectionKeyMainDB"].ConnectionString;
-        FlashcardsController flashcardController = new FlashcardsController();
+        //FlashcardsController flashcardController = new FlashcardsController();
         OutputController outputController = new OutputController(); 
         InputController inputController = new InputController();
         TableVisualisationEngine tableVisualisationEngine = new TableVisualisationEngine();
@@ -27,18 +27,32 @@ namespace Flashcards
 
         }
 
-        internal void CreateTableOfDB(SqlCommand command)
+        internal void CreateTableOfDB()
         {
-            command.CommandText = @"CREATE TABLE IF NOT EXISTS StackTable (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, ListOfStacks TEXT NOT NULL, CreationDate TEXT NOT NULL, EditDate TEXT NOT NULL)";
-            command.ExecuteNonQuery();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = @"CREATE TABLE IF NOT EXISTS StackTable (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, ListOfStacks TEXT NOT NULL, CreationDate TEXT NOT NULL, EditDate TEXT NOT NULL)";
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
         }
 
-        internal void CreateFlashcardStack(SqlCommand command)
+        internal void CreateFlashcardStack()
         {
-            outputController.DisplayMessage("CreateStackInputName");
-            string userInput = inputController.GetUserInputString();
-            command.CommandText = $"CREATE TABLE IF NOT EXISTS '{userInput}' (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FrontOfCard TEXT NOT NULL, BackOfCard TEXT NOT NULL, CreationDate TEXT NOT NULL, EditDate TEXT NOT NULL)";
-            command.ExecuteNonQuery();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    outputController.DisplayMessage("CreateStackInputName");
+                    string userInput = inputController.GetUserInputString();
+                    command.CommandText = $"CREATE TABLE IF NOT EXISTS '{userInput}' (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FrontOfCard TEXT NOT NULL, BackOfCard TEXT NOT NULL, CreationDate TEXT NOT NULL, EditDate TEXT NOT NULL)";
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
         internal void DeleteFlashcardStack(SqlCommand command)
@@ -57,7 +71,7 @@ namespace Flashcards
             flashCard.FlashcardFront = inputController.GetUserInputString();
             outputController.DisplayMessage("CreateFlashcardInputBack");
             flashCard.FlashcardBack = inputController.GetUserInputString();
-            flashCard.DateTimeCreation = flashcardController.GetCurrentDateTime();
+            flashCard.DateTimeCreation = DateTime.Now.ToString();
             command.CommandText = $"INSERT INTO CodingTable (FrontOfCard, BackOfCard, CreationDate, EditDate) VALUES('{flashCard.FlashcardFront}','{flashCard.FlashcardBack}','{flashCard.DateTimeCreation}','{flashCard.DateTimeCreation}');";
             command.ExecuteNonQuery();
         }
@@ -86,7 +100,7 @@ namespace Flashcards
                 {
                     tableData.Add(new List<object> { sqlDataReader.GetInt32(0), sqlDataReader.GetString(1), sqlDataReader.GetString(2), sqlDataReader.GetString(3) });
                 }
-                tableVisualisationEngine.DisplayFlashcardsInStack(tableData);
+                tableVisualisationEngine.DisplayStacks(tableData);
             }
         }
 
@@ -102,7 +116,7 @@ namespace Flashcards
 
                 while (sqlDataReader.Read())
                 {
-                    tableData.Add(new List<object> { sqlDataReader.GetInt32(0), sqlDataReader.GetString(1), sqlDataReader.GetString(2), sqlDataReader.GetString(3) });
+                    tableData.Add(new List<object> { sqlDataReader.GetString(1), sqlDataReader.GetString(2), sqlDataReader.GetString(3), sqlDataReader.GetString(4) });
                 }
                 tableVisualisationEngine.DisplayFlashcardsInStack(tableData);
             }
@@ -118,14 +132,9 @@ namespace Flashcards
             string frontOfCard = inputController.GetUserInputString();
             outputController.DisplayMessage("");
             string backOfCard = inputController.GetUserInputString();
-            string editDate = flashcardController.GetCurrentDateTime();
+            string editDate = DateTime.Now.ToString();
             command.CommandText = $"UPDATE CodingTable SET FrontOfCard ='{frontOfCard}', BackOfCard ='{backOfCard}', EditDate ='{editDate}'";
             command.ExecuteNonQuery();
-        }
-
-        internal void StudySession()
-        {
-            int score = flashcardController.TestSkill(); //TODO
         }
     }
 }

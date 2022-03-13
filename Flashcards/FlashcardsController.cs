@@ -18,31 +18,31 @@
                         programRunning = false;
                         break;
                     case 1:
-                        sqlController.SQLConnectionCall(sqlController.CreateFlashcardStack);
+                        sqlController.CreateFlashcardStack();
                         break;
                     case 2:
-                        sqlController.SQLConnectionCall(sqlController.CreateFlashCard);
+                        //sqlController.CreateFlashCard();
                         break;
                     case 3:
-                        sqlController.SQLConnectionCall(sqlController.DeleteFlashcardStack);
+                       // sqlController.DeleteFlashcardStack();
                         break;
                     case 4:
-                        sqlController.SQLConnectionCall(sqlController.DeleteFlashCard);
+                       // sqlController.DeleteFlashCard();
                         break;
                     case 5:
-                        sqlController.SQLConnectionCall(sqlController.ShowStacks);
+                       // sqlController.ShowStacks();
                         break;
                     case 6:
-                        sqlController.SQLConnectionCall(sqlController.ShowFlashcardsInStack);
+                       // sqlController.ShowFlashcardsInStack();
                         break;
                     case 7:
-                        sqlController.SQLConnectionCall(sqlController.UpdateStack);
+                      //  sqlController.UpdateStack();
                         break;
                     case 8:
-                        sqlController.SQLConnectionCall(sqlController.UpdateFlashcardInStack);
+                      //  sqlController.UpdateFlashcardInStack();
                         break;
                     case 9:
-                        sqlController.StudySession();
+                        //sqlController.StudySession();
                         break;
 
                 }
@@ -52,27 +52,26 @@
         internal int TestSkill()
         {
             int score = 0;
+            bool inProgress = true;
 
-            while (true) //n <= PullStack.numberOfFlashcards 
+            while (inProgress) //n <= PullStack.numberOfFlashcards 
             {
-                if (inputController.GetUserInputString() == "true") // test if user input == flashcardBack
-                    score++;
+                while (inputController.GetUserInputString() == "true") // test if user input == flashcardBack
+                    score++; // needs to be fixed with logic for scoring
+                inProgress = false;
             }
 
             return score; //crate date and score table
         }
 
+        internal void StudySession()
+        {
+            int score = TestSkill(); //TODO
+        }
+
         internal void PullStackOfFlashcards()
         { 
 
-        }
-
-        internal string GetCurrentDateTime()
-        {
-            DateTime currentDateTime = DateTime.Now;
-            string currentDateTimeString = currentDateTime.ToString();
-
-            return currentDateTimeString;
         }
     }
 }

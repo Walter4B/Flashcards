@@ -6,7 +6,6 @@ namespace Flashcards
     {
         private readonly IConfiguration configuration = GetConfig();
 
-
         internal void DisplayMessage(string messageKey)
         {
             Console.WriteLine(configuration[messageKey]);

@@ -10,7 +10,7 @@ class FlashcardsMain
         FlashcardsController flashcardsController = new FlashcardsController();
         SQLController sqlController = new SQLController();
 
-        sqlController.SQLConnectionCall(sqlController.CreateTableOfDB);
+        sqlController.CreateTableOfDB();
         flashcardsController.MainSwitchLoop();
     }
 }
