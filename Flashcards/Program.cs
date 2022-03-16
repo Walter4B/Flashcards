@@ -10,9 +10,10 @@ class FlashcardsMain
         FlashcardsController flashcardsController = new FlashcardsController();
         SQLController sqlController = new SQLController();
 
-        sqlController.CreateDatabase();
+        sqlController.SQLConnectionCall(sqlController.CreateDatabase);
         Console.WriteLine("yup");
-        sqlController.SQLConnectionCall(sqlController.CreateTables);
+        sqlController.SQLConnectionCall(sqlController.DeleteDatabaseDEBUG);
+        //sqlController.SQLConnectionCall(sqlController.CreateTables);
         flashcardsController.MainSwitchLoop();
     }
 }
