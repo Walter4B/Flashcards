@@ -9,10 +9,11 @@ class FlashcardsMain
     {
         FlashcardsController flashcardsController = new FlashcardsController();
         SQLController sqlController = new SQLController();
+        DatabaseManager dbManager = new DatabaseManager();
 
-        sqlController.SQLConnectionCall(sqlController.CreateDatabase);
+        dbManager.CreateDatabase();
         Console.WriteLine("yup");
-        sqlController.SQLConnectionCall(sqlController.DeleteDatabaseDEBUG);
+        //sqlController.SQLConnectionCall(sqlController.DeleteDatabaseDEBUG);
         //sqlController.SQLConnectionCall(sqlController.CreateTables);
         flashcardsController.MainSwitchLoop();
     }

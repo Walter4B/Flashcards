@@ -7,7 +7,7 @@ namespace Flashcards
 {
     internal class SQLController 
     {
-        string connectionString = ConfigurationManager.ConnectionStrings["connectionKey"].ConnectionString;
+        string connectionString = ConfigurationManager.ConnectionStrings["connectionKeyDatabase"].ConnectionString;
         //FlashcardsController flashcardController = new FlashcardsController();
         OutputController outputController = new OutputController(); 
         InputController inputController = new InputController();
@@ -24,36 +24,6 @@ namespace Flashcards
                 }
             }
 
-        }
-
-        internal void CreateDatabase(SqlCommand command)
-        {
-            try
-            {
-                string str = "CREATE DATABASE FlashcardsDatabase ON PRIMARY " +
-                    "(NAME = FlashcardsDatabase, " +
-                    "FILENAME = 'C:\\Users\\walter\\Desktop\\LocalDB\\test.mdf', " +
-                    "SIZE = 2MB, MAXSIZE = 10MB, FILEGROWTH = 10%)" +
-                    "LOG ON (NAME = FlashcardsDatabase_Log, " +
-                    "FILENAME = 'C:\\Users\\walter\\Desktop\\LocalDB\\test.ldf', " +
-                    "SIZE = 1MB, " +
-                    "MAXSIZE = 5MB, " +
-                    "FILEGROWTH = 10%)";
-
-                command.CommandText = str;
-                command.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
-
-        internal void CreateTables(SqlCommand command)
-        {
-            command.CommandText = "CREATE TABLE IF NOT EXISTS SubjectKeysTable (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, ListOfStacks TEXT NOT NULL, CreationDate TEXT NOT NULL, EditDate TEXT NOT NULL)";
-            command.CommandText = "CREATE TABLE IF NOT EXISTS FlashcardsTable (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, Front TEXT NOT NULL, Back TEXT NOT NULL, CreationDate TEXT NOT NULL, EditDate TEXT NOT NULL)";
-            command.ExecuteNonQuery();
         }
 
         internal void CreateFlashCard(SqlCommand command)
