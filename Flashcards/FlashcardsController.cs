@@ -18,31 +18,19 @@
                         programRunning = false;
                         break;
                     case 1:
-                        sqlController.CreateFlashcardStack();
+                        sqlController.SQLConnectionCall(sqlController.CreateFlashCard);
                         break;
                     case 2:
-                        //sqlController.CreateFlashCard();
+                        sqlController.SQLConnectionCall(sqlController.DeleteFlashCard);
                         break;
                     case 3:
-                       // sqlController.DeleteFlashcardStack();
+                        sqlController.SQLConnectionCall(sqlController.UpdateFlashcard);
                         break;
                     case 4:
-                       // sqlController.DeleteFlashCard();
+                        sqlController.SQLConnectionCall(sqlController.ShowTableBySubjects);
                         break;
                     case 5:
-                       // sqlController.ShowStacks();
-                        break;
-                    case 6:
-                       // sqlController.ShowFlashcardsInStack();
-                        break;
-                    case 7:
-                      //  sqlController.UpdateStack();
-                        break;
-                    case 8:
-                      //  sqlController.UpdateFlashcardInStack();
-                        break;
-                    case 9:
-                        //sqlController.StudySession();
+                        StudySession();
                         break;
 
                 }

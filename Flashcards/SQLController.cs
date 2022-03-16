@@ -7,7 +7,7 @@ namespace Flashcards
 {
     internal class SQLController 
     {
-        private string connectionString = ConfigurationManager.ConnectionStrings["connectionKeyMainDB"].ConnectionString;
+        private string connectionString = ConfigurationManager.ConnectionStrings["connectionKey"].ConnectionString;
         //FlashcardsController flashcardController = new FlashcardsController();
         OutputController outputController = new OutputController(); 
         InputController inputController = new InputController();
@@ -19,48 +19,36 @@ namespace Flashcards
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    connection.Open();
-                    //functionToPass(command);
-                    connection.Close();
+                    functionToPass(command);
                 }
             }
 
         }
 
-        internal void CreateTableOfDB()
+        internal void CreateDatabase()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    connection.Open();
-                    command.CommandText = @"CREATE TABLE IF NOT EXISTS StackTable (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, ListOfStacks TEXT NOT NULL, CreationDate TEXT NOT NULL, EditDate TEXT NOT NULL)";
-                    command.ExecuteNonQuery();
-                    connection.Close();
-                }
-            }
-        }
+                    string str = @"CREATE DATABASE IF NOT EXISTS MyDatabase ON PRIMARY " +
+                  "(NAME = MyDatabase_Data, " +
+                  "FILENAME = 'D:/Projects/Flashcards.mdf', " +
+                  "SIZE = 2MB, MAXSIZE = 10MB, FILEGROWTH = 10%)" +
+                  "SIZE = 1MB, " +
+                  "MAXSIZE = 5MB, " +
+                  "FILEGROWTH = 10%)";
 
-        internal void CreateFlashcardStack()
-        {
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    outputController.DisplayMessage("CreateStackInputName");
-                    string userInput = inputController.GetUserInputString();
-                    command.CommandText = $"CREATE TABLE IF NOT EXISTS '{userInput}' (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FrontOfCard TEXT NOT NULL, BackOfCard TEXT NOT NULL, CreationDate TEXT NOT NULL, EditDate TEXT NOT NULL)";
+                    command.CommandText = str;
                     command.ExecuteNonQuery();
                 }
             }
         }
 
-        internal void DeleteFlashcardStack(SqlCommand command)
+        internal void CreateTables(SqlCommand command)
         {
-            outputController.DisplayMessage("DeleteStackInstruction");
-            string userInput = inputController.GetUserInputString();
-            command.CommandText = $"DELETE TABLE IF EXISTS '{userInput}'";
-            command.CommandText = $"DELETE FROM StackTable WHERE ListOfStacks = '{userInput}';";
+            command.CommandText = @"CREATE TABLE IF NOT EXISTS SubjectKeysTable (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, ListOfStacks TEXT NOT NULL, CreationDate TEXT NOT NULL, EditDate TEXT NOT NULL)";
+            command.CommandText = @"CREATE TABLE IF NOT EXISTS FlashcardsTable (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, Front TEXT NOT NULL, Back TEXT NOT NULL, CreationDate TEXT NOT NULL, EditDate TEXT NOT NULL)";
             command.ExecuteNonQuery();
         }
 
@@ -86,7 +74,7 @@ namespace Flashcards
             command.ExecuteNonQuery();
         }
 
-        internal void ShowStacks(SqlCommand command)
+        internal void ShowTableBySubjects(SqlCommand command)
         {
             outputController.DisplayMessage("ChoseStack");
             string userInput = inputController.GetUserInputString();
@@ -104,28 +92,7 @@ namespace Flashcards
             }
         }
 
-        internal void ShowFlashcardsInStack(SqlCommand command)
-        {
-            outputController.DisplayMessage("ChoseStack");
-            string userInput = inputController.GetUserInputString();
-            string CommandText = $"SELECT * FROM '{userInput}'";
-            command.CommandText = CommandText;
-            using (SqlDataReader sqlDataReader = command.ExecuteReader())
-            {
-                var tableData = new List<List<object>> { };
-
-                while (sqlDataReader.Read())
-                {
-                    tableData.Add(new List<object> { sqlDataReader.GetString(1), sqlDataReader.GetString(2), sqlDataReader.GetString(3), sqlDataReader.GetString(4) });
-                }
-                tableVisualisationEngine.DisplayFlashcardsInStack(tableData);
-            }
-        }
-
-        internal void UpdateStack(SqlCommand command)
-        { }
-
-        internal void UpdateFlashcardInStack(SqlCommand command)
+        internal void UpdateFlashcard(SqlCommand command)
         {
             FlashCard flashcard = new FlashCard();
             outputController.DisplayMessage("UpdateChoseFlashcard");
