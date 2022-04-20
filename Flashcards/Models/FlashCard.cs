@@ -4,7 +4,7 @@
     {
         public int FlashcardId { get; set; }
 
-        public string StackReference { get; set; }
+        public int StackReference { get; set; }
 
         public string FlashcardFront { get; set; }
 

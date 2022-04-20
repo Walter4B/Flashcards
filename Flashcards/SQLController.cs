@@ -5,10 +5,10 @@ using System.Data.SqlClient;
 
 namespace Flashcards
 {
-    internal class SQLController 
+    internal class SQLController
     {
         string connectionString = ConfigurationManager.ConnectionStrings["connectionKeyServer"].ConnectionString;
-        OutputController outputController = new OutputController(); 
+        OutputController outputController = new OutputController();
         InputController inputController = new InputController();
         TableVisualisationEngine tableVisualisationEngine = new TableVisualisationEngine();
 
@@ -21,13 +21,13 @@ namespace Flashcards
                     connection.Open();
                     Models.FlashCard flashCard = new Models.FlashCard();
                     outputController.DisplayMessage("ChoseStack");
-                    string stackReference = inputController.GetUserInputString();
+                    flashCard.StackReference = inputController.GetUserInputInt();
                     outputController.DisplayMessage("CreateFlashcardInputFront");
                     flashCard.FlashcardFront = inputController.GetUserInputString();
                     outputController.DisplayMessage("CreateFlashcardInputBack");
                     flashCard.FlashcardBack = inputController.GetUserInputString();
                     flashCard.DateTimeCreation = DateTime.Now.ToString();
-                    command.CommandText = $@"INSERT INTO FlashcardTable (FlashcardFront, FlashcardBack, DateTimeCreation, DateTimeEdit, StackReference) VALUES('{flashCard.FlashcardFront}','{flashCard.FlashcardBack}','{flashCard.DateTimeCreation}','{flashCard.DateTimeCreation}','{flashCard.StackReference}')";
+                    command.CommandText = $@"INSERT INTO FlashcardTable (FlashcardFront, FlashcardBack, DateTimeCreation, DateTimeEdit, StackId) VALUES('{flashCard.FlashcardFront}','{flashCard.FlashcardBack}','{flashCard.DateTimeCreation}','{flashCard.DateTimeCreation}','{flashCard.StackReference}')";
                     command.ExecuteNonQuery();
                 }
             }
@@ -103,15 +103,16 @@ namespace Flashcards
                     command.ExecuteNonQuery();
                 }
             }
-            
+
         }
 
-        internal void UpdateStack() 
+        internal void UpdateStack()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
+                    connection.Open();
                     Models.Stack flashcard = new Models.Stack();
                     outputController.DisplayMessage("UpdateChoseStack");
                     int stackId = inputController.GetUserInputInt();
@@ -130,6 +131,7 @@ namespace Flashcards
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
+                    connection.Open();
                     outputController.DisplayMessage("DeleteStackInstruction");
                     int userInputFlashCard = inputController.GetUserInputInt();
                     command.CommandText = $"DELETE FROM StackTable WHERE ID = '{userInputFlashCard}';";
@@ -138,16 +140,14 @@ namespace Flashcards
             }
         }
 
-        internal void ShowStack()
+        internal void ShowStacks()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     connection.Open();
-                    outputController.DisplayMessage("ChoseStack");
-                    string userInput = inputController.GetUserInputString();
-                    string CommandText = $"SELECT * FROM FlashcardTable where StackReference = '{userInput}'";
+                    string CommandText = $"SELECT * FROM StackTable";
                     command.CommandText = CommandText;
                     using (SqlDataReader sqlDataReader = command.ExecuteReader())
                     {
@@ -163,10 +163,9 @@ namespace Flashcards
             }
         }
 
-        internal void GetStudySessions() 
+        internal void GetStudySessions()
         {
             Console.WriteLine();
         }
-
     }
 }

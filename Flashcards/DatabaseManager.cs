@@ -8,8 +8,7 @@ namespace Flashcards
         internal void CreateDatabase()
         {
 
-            string connectionString = ConfigurationManager.ConnectionStrings["connectionKeyServer"].ConnectionString;
-
+            string connectionString = "Server=(LocalDb)\\LocalDBDemo; Integrated Security=true;";
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -40,7 +39,7 @@ namespace Flashcards
         internal void CreateTables()
         {
 
-            string connectionString = "Server=(LocalDb)\\LocalDBDemo; Initial Catalog=FlashcardDatabase; Integrated Security=true;";
+            string connectionString = ConfigurationManager.ConnectionStrings["connectionKeyServer"].ConnectionString;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

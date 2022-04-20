@@ -44,13 +44,13 @@
                         programRunning = false;
                         break;
                     case 1:
-                        MainMenu();
-                        break;
-                    case 2:
                         sqlController.CreateStack();
                         break;
-                    case 3:
+                    case 2:
                         FlashcardsMenu();
+                        break;
+                    case 3:
+                        sqlController.ShowStacks();
                         break;
                     default:
                         outputController.DisplayMessage("InvalidInput");
@@ -72,21 +72,18 @@
                         programRunning = false;
                         break;
                     case 1:
-                        MainMenu();
-                        break;
-                    case 2:
                         sqlController.UpdateStack();
                         break;
-                    case 3:
+                    case 2:
                         sqlController.DeleteStack();
                         break;
-                    case 4:
+                    case 3:
                         sqlController.CreateFlashCard();
                         break;
-                    case 5:
+                    case 4:
                         sqlController.DeleteFlashCard();
                         break;
-                    case 6:
+                    case 5:
                         sqlController.UpdateFlashcard();
                         break;
                     default:
@@ -109,12 +106,9 @@
                         programRunning = false;
                         break;
                     case 1:
-                        MainMenu();
-                        break;
-                    case 2:
                         studyController.NewStudySession(); //TODO
                         break;
-                    case 3:
+                    case 2:
                         sqlController.GetStudySessions(); //TODO
                         break;
                     default:
