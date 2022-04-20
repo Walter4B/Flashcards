@@ -5,61 +5,124 @@
         InputController inputController = new InputController();
         OutputController outputController = new OutputController();
         SQLController sqlController = new SQLController();
+        StudyController studyController = new StudyController();   
 
-        internal void MainSwitchLoop()
+        internal void MainMenu()
         {
             bool programRunning = true;
             while (programRunning)
             {
-                outputController.DisplayMessage("Main");
+                outputController.DisplayMessage("MainMenu");
                 switch (inputController.GetUserInputInt())
                 {
                     case 0:
                         programRunning = false;
                         break;
                     case 1:
-                        sqlController.SQLConnectionCall(sqlController.CreateFlashCard);
+                        StacksMenu();
                         break;
                     case 2:
-                        sqlController.SQLConnectionCall(sqlController.DeleteFlashCard);
+                        StudyMenu();
+                        break;
+                    default:
+                        outputController.DisplayMessage("InvalidInput");
+                        break;
+
+                }
+            }
+        } 
+
+        internal void StacksMenu()
+        {
+            bool programRunning = true;
+            while (programRunning)
+            {
+                outputController.DisplayMessage("StackMenu");
+                switch (inputController.GetUserInputInt())
+                {
+                    case 0:
+                        programRunning = false;
+                        break;
+                    case 1:
+                        MainMenu();
+                        break;
+                    case 2:
+                        sqlController.CreateStack();
                         break;
                     case 3:
-                        sqlController.SQLConnectionCall(sqlController.UpdateFlashcard);
+                        FlashcardsMenu();
                         break;
-                    case 4:
-                        sqlController.SQLConnectionCall(sqlController.ShowTableBySubjects);
-                        break;
-                    case 5:
-                        StudySession();
+                    default:
+                        outputController.DisplayMessage("InvalidInput");
                         break;
 
                 }
             }
         }
 
-        internal int TestSkill()
+        internal void FlashcardsMenu()
         {
-            int score = 0;
-            bool inProgress = true;
-
-            while (inProgress) //n <= PullStack.numberOfFlashcards 
+            bool programRunning = true;
+            while (programRunning)
             {
-                while (inputController.GetUserInputString() == "true") // test if user input == flashcardBack
-                    score++; // needs to be fixed with logic for scoring
-                inProgress = false;
+                outputController.DisplayMessage("FleshcardMenu");
+                switch (inputController.GetUserInputInt())
+                {
+                    case 0:
+                        programRunning = false;
+                        break;
+                    case 1:
+                        MainMenu();
+                        break;
+                    case 2:
+                        sqlController.UpdateStack();
+                        break;
+                    case 3:
+                        sqlController.DeleteStack();
+                        break;
+                    case 4:
+                        sqlController.CreateFlashCard();
+                        break;
+                    case 5:
+                        sqlController.DeleteFlashCard();
+                        break;
+                    case 6:
+                        sqlController.UpdateFlashcard();
+                        break;
+                    default:
+                        outputController.DisplayMessage("InvalidInput");
+                        break;
+
+                }
             }
-
-            return score; //crate date and score table
         }
 
-        internal void StudySession()
+        internal void StudyMenu() //TODO
         {
-            int score = TestSkill(); //TODO
-        }
+            bool programRunning = true;
+            while (programRunning)
+            {
+                outputController.DisplayMessage("StudyMenu");
+                switch (inputController.GetUserInputInt())
+                {
+                    case 0:
+                        programRunning = false;
+                        break;
+                    case 1:
+                        MainMenu();
+                        break;
+                    case 2:
+                        studyController.NewStudySession(); //TODO
+                        break;
+                    case 3:
+                        sqlController.GetStudySessions(); //TODO
+                        break;
+                    default:
+                        outputController.DisplayMessage("InvalidInput");
+                        break;
 
-        internal void PullStackOfFlashcards()
-        { 
-
+                }
+            }
         }
     }
 }

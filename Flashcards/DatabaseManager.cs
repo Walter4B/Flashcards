@@ -7,8 +7,8 @@ namespace Flashcards
     {
         internal void CreateDatabase()
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["connectionKeyServer"].ConnectionString;
 
+            string connectionString = ConfigurationManager.ConnectionStrings["connectionKeyServer"].ConnectionString;
 
             try
             {
@@ -18,9 +18,9 @@ namespace Flashcards
                     {
                         connection.Open();
 
-                        string str = $@"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'quizDb')
+                        string str = $@"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'FlashcardDatabase')
                                         BEGIN
-                                            CREATE DATABASE quizDb;
+                                            CREATE DATABASE FlashcardDatabase;
                                         END;
                                      ";
 
@@ -30,15 +30,18 @@ namespace Flashcards
                 }
                 CreateTables();
             }
+
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Console.WriteLine("table already existst");
             }
         }
 
         internal void CreateTables()
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["connectionKeyDatabase"].ConnectionString;
+
+            string connectionString = "Server=(LocalDb)\\LocalDBDemo; Initial Catalog=FlashcardDatabase; Integrated Security=true;";
+
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -46,33 +49,33 @@ namespace Flashcards
                     connection.Open();
 
                     command.CommandText =
-                       $@" IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'stack')
-                        CREATE TABLE stack (
-	                      Id int IDENTITY(1,1) NOT NULL,
-	                      Name varchar(100) NOT NULL UNIQUE,
+                       $@" IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'StackTable')
+                        CREATE TABLE StackTable (
+	                      Id int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	                      Name varchar(30) NOT NULL UNIQUE,
                           CreationDate varchar(30) NOT NULL,
                           EditDate varchar(30) NOT NULL,
-	                      PRIMARY KEY (Id)
                          );
                       ";
 
                     command.ExecuteNonQuery();
 
                     command.CommandText =
-                        $@" IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'flashcard')
-                        CREATE TABLE flashcard (
+                        $@" IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'FlashcardTable')
+                        CREATE TABLE FlashcardTable (
                           Id int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-                          Question varchar(30) NOT NULL,
-                          Answer varchar(30) NOT NULL,
-                          CreationDate varchar(30) NOT NULL,
-                          EditDate varchar(30) NOT NULL,
-                          StackId int NOT NULL 
+                          FlashcardFront varchar(30) NOT NULL,
+                          FlashcardBack varchar(30) NOT NULL,
+                          DateTimeCreation varchar(30) NOT NULL,
+                          DateTimeEdit varchar(30) NOT NULL,
+                          StackId int NOT NULL
                             FOREIGN KEY 
-                            REFERENCES stack(Id) 
+                            REFERENCES StackTable(Id) 
                             ON DELETE CASCADE 
                             ON UPDATE CASCADE
                          );
                       ";
+
                     command.ExecuteNonQuery();
                 }
             }
