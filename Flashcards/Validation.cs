@@ -9,5 +9,13 @@
             else
                 return true;
         }
+
+        internal bool ValidateBool(string input)
+        {
+            if (input == "Y" || input == "N" || input == "y" || input == "n")
+                return true;
+            else
+                return false;
+        }
     }
 }

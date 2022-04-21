@@ -21,5 +21,19 @@
             int userInputValid = Convert.ToInt32(userInput);
             return userInputValid;
         }
+
+        internal bool GetUserInputBool()
+        {
+            string userInput = Console.ReadLine();
+            while (!validator.ValidateBool(userInput))
+            {
+                outputController.DisplayMessage("InvalidInput");
+                userInput = Console.ReadLine();
+            }
+            if (userInput == "Y" || userInput == "y")
+                return true;
+            else
+                return false;
+        }
     }
 }

@@ -12,40 +12,53 @@ namespace Flashcards
         InputController inputController = new InputController();
         TableVisualisationEngine tableVisualisationEngine = new TableVisualisationEngine();
 
-        internal void CreateFlashCard() //TODO while create
+        internal void CreateFlashCard()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    connection.Open();
-                    Models.FlashCard flashCard = new Models.FlashCard();
                     outputController.DisplayMessage("ChoseStack"); //TOOD check if stack exists
-                    flashCard.StackReference = inputController.GetUserInputInt();
-                    outputController.DisplayMessage("CreateFlashcardInputFront");
-                    flashCard.FlashcardFront = inputController.GetUserInputString();
-                    outputController.DisplayMessage("CreateFlashcardInputBack");
-                    flashCard.FlashcardBack = inputController.GetUserInputString();
-                    flashCard.DateTimeCreation = DateTime.Now.ToString();
-                    command.CommandText = $@"INSERT INTO FlashcardTable (FlashcardFront, FlashcardBack, DateTimeCreation, DateTimeEdit, StackId) VALUES('{flashCard.FlashcardFront}','{flashCard.FlashcardBack}','{flashCard.DateTimeCreation}','{flashCard.DateTimeCreation}','{flashCard.StackReference}')";
-                    command.ExecuteNonQuery();
-                    connection.Close();
+                    int stackRef = inputController.GetUserInputInt();
+                    bool running = true;
+                    while (running)
+                    {
+                        Models.FlashCard flashCard = new Models.FlashCard();
+                        flashCard.StackReference = stackRef;
+                        outputController.DisplayMessage("CreateFlashcardInputFront");
+                        flashCard.FlashcardFront = inputController.GetUserInputString();
+                        outputController.DisplayMessage("CreateFlashcardInputBack");
+                        flashCard.FlashcardBack = inputController.GetUserInputString();
+                        flashCard.DateTimeCreation = DateTime.Now.ToString();
+                        command.CommandText = $@"INSERT INTO FlashcardTable (FlashcardFront, FlashcardBack, DateTimeCreation, DateTimeEdit, StackId) VALUES('{flashCard.FlashcardFront}','{flashCard.FlashcardBack}','{flashCard.DateTimeCreation}','{flashCard.DateTimeCreation}','{flashCard.StackReference}')";
+                        connection.Open();
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                        outputController.DisplayMessage("ContinuInputing?");
+                        running = inputController.GetUserInputBool();
+                    }
                 }
             }
         }
 
-        internal void DeleteFlashCard() //TODO while delete
+        internal void DeleteFlashCard()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    connection.Open();
-                    outputController.DisplayMessage("DeleteFlashcardInstruction");
-                    int userInputFlashCard = inputController.GetUserInputInt();
-                    command.CommandText = $"DELETE FROM FlashcardTable WHERE ID = '{userInputFlashCard}';";
-                    command.ExecuteNonQuery();
-                    connection.Close();
+                    bool running = true;
+                    while (running)
+                    {
+                        connection.Open();
+                        outputController.DisplayMessage("DeleteFlashcardInstruction");
+                        int userInputFlashCard = inputController.GetUserInputInt();
+                        command.CommandText = $"DELETE FROM FlashcardTable WHERE ID = '{userInputFlashCard}';";
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                        outputController.DisplayMessage("ContinueDeleteing?");
+                        running = inputController.GetUserInputBool();
+                    }
                 }
             }
         }
@@ -72,7 +85,7 @@ namespace Flashcards
             }
         }
 
-        internal void ShowFlashcards() //TODO list flashcards from specific stack
+        internal void ShowFlashcards()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
