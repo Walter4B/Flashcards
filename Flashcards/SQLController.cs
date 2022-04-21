@@ -12,7 +12,67 @@ namespace Flashcards
         InputController inputController = new InputController();
         TableVisualisationEngine tableVisualisationEngine = new TableVisualisationEngine();
 
-        internal void CreateFlashCard()
+        internal void CreateFlashCard() //TODO while create
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    Models.FlashCard flashCard = new Models.FlashCard();
+                    outputController.DisplayMessage("ChoseStack"); //TOOD check if stack exists
+                    flashCard.StackReference = inputController.GetUserInputInt();
+                    outputController.DisplayMessage("CreateFlashcardInputFront");
+                    flashCard.FlashcardFront = inputController.GetUserInputString();
+                    outputController.DisplayMessage("CreateFlashcardInputBack");
+                    flashCard.FlashcardBack = inputController.GetUserInputString();
+                    flashCard.DateTimeCreation = DateTime.Now.ToString();
+                    command.CommandText = $@"INSERT INTO FlashcardTable (FlashcardFront, FlashcardBack, DateTimeCreation, DateTimeEdit, StackId) VALUES('{flashCard.FlashcardFront}','{flashCard.FlashcardBack}','{flashCard.DateTimeCreation}','{flashCard.DateTimeCreation}','{flashCard.StackReference}')";
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+        }
+
+        internal void DeleteFlashCard() //TODO while delete
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    outputController.DisplayMessage("DeleteFlashcardInstruction");
+                    int userInputFlashCard = inputController.GetUserInputInt();
+                    command.CommandText = $"DELETE FROM FlashcardTable WHERE ID = '{userInputFlashCard}';";
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+        }
+
+        internal void UpdateFlashcard() 
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    Models.FlashCard flashcard = new Models.FlashCard();
+                    outputController.DisplayMessage("UpdateChoseFlashcard");
+                    string id = inputController.GetUserInputString();
+                    outputController.DisplayMessage("CreateFlashcardInputFront");
+                    string frontOfCard = inputController.GetUserInputString();
+                    outputController.DisplayMessage("CreateFlashcardInputBack");
+                    string backOfCard = inputController.GetUserInputString();
+                    string editDate = DateTime.Now.ToString();
+                    command.CommandText = $"UPDATE FlashcardTable SET FlashcardFront ='{frontOfCard}', FlashcardBack ='{backOfCard}', DateTimeEdit ='{editDate}' WHERE ID = '{id}'";
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+        }
+
+        internal void ShowFlashcards() //TODO list flashcards from specific stack
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -22,57 +82,7 @@ namespace Flashcards
                     Models.FlashCard flashCard = new Models.FlashCard();
                     outputController.DisplayMessage("ChoseStack");
                     flashCard.StackReference = inputController.GetUserInputInt();
-                    outputController.DisplayMessage("CreateFlashcardInputFront");
-                    flashCard.FlashcardFront = inputController.GetUserInputString();
-                    outputController.DisplayMessage("CreateFlashcardInputBack");
-                    flashCard.FlashcardBack = inputController.GetUserInputString();
-                    flashCard.DateTimeCreation = DateTime.Now.ToString();
-                    command.CommandText = $@"INSERT INTO FlashcardTable (FlashcardFront, FlashcardBack, DateTimeCreation, DateTimeEdit, StackId) VALUES('{flashCard.FlashcardFront}','{flashCard.FlashcardBack}','{flashCard.DateTimeCreation}','{flashCard.DateTimeCreation}','{flashCard.StackReference}')";
-                    command.ExecuteNonQuery();
-                }
-            }
-        }
-
-        internal void DeleteFlashCard()
-        {
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    outputController.DisplayMessage("DeleteFlashcardInstruction");
-                    int userInputFlashCard = inputController.GetUserInputInt();
-                    command.CommandText = $"DELETE FROM FlashcardTable WHERE ID = '{userInputFlashCard}';";
-                    command.ExecuteNonQuery();
-                }
-            }
-        }
-
-        internal void UpdateFlashcard()
-        {
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    Models.FlashCard flashcard = new Models.FlashCard();
-                    outputController.DisplayMessage("UpdateChoseFlashcard");
-                    string frontOfCard = inputController.GetUserInputString();
-                    outputController.DisplayMessage("");
-                    string backOfCard = inputController.GetUserInputString();
-                    string editDate = DateTime.Now.ToString();
-                    command.CommandText = $"UPDATE FlashcardTable SET FrontOfCard ='{frontOfCard}', BackOfCard ='{backOfCard}', EditDate ='{editDate}'";
-                    command.ExecuteNonQuery();
-                }
-            }
-        }
-
-        internal void ShowFlashcards()
-        {
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    connection.Open();
-                    string CommandText = $"SELECT * FROM FlashcardTable";
+                    string CommandText = $"SELECT * FROM FlashcardTable WHERE StackId = '{flashCard.StackReference}'";
                     command.CommandText = CommandText;
                     using (SqlDataReader sqlDataReader = command.ExecuteReader())
                     {
@@ -80,10 +90,11 @@ namespace Flashcards
 
                         while (sqlDataReader.Read())
                         {
-                            tableData.Add(new List<object> { sqlDataReader.GetInt32(0), sqlDataReader.GetString(1), sqlDataReader.GetString(2), sqlDataReader.GetString(3), sqlDataReader.GetString(4) });
+                            tableData.Add(new List<object> { sqlDataReader.GetInt32(0), sqlDataReader.GetString(1), sqlDataReader.GetString(2), sqlDataReader.GetInt32(5), sqlDataReader.GetString(3), sqlDataReader.GetString(4) });
                         }
-                        tableVisualisationEngine.DisplayStacks(tableData);
+                        tableVisualisationEngine.DisplayFlashcardsInStack(tableData);
                     }
+                    connection.Close();
                 }
             }
         }
@@ -101,9 +112,9 @@ namespace Flashcards
                     stack.DateTimeCreation = DateTime.Now.ToString();
                     command.CommandText = $"INSERT INTO StackTable (Name, CreationDate, EditDate) VALUES('{stack.StackName}','{stack.DateTimeCreation}','{stack.DateTimeCreation}')";
                     command.ExecuteNonQuery();
+                    connection.Close();
                 }
             }
-
         }
 
         internal void UpdateStack()
@@ -121,6 +132,7 @@ namespace Flashcards
                     string editDate = DateTime.Now.ToString();
                     command.CommandText = $"UPDATE StackTable SET Name ='{newName}', EditDate ='{editDate}' Where Id = {stackId}";
                     command.ExecuteNonQuery();
+                    connection.Close();
                 }
             }
         }
@@ -135,7 +147,9 @@ namespace Flashcards
                     outputController.DisplayMessage("DeleteStackInstruction");
                     int userInputFlashCard = inputController.GetUserInputInt();
                     command.CommandText = $"DELETE FROM StackTable WHERE ID = '{userInputFlashCard}';";
+                    command.CommandText = $"DELETE FROM FlashcardTable WHERE StackId = '{userInputFlashCard}';";
                     command.ExecuteNonQuery();
+                    connection.Close();
                 }
             }
         }
@@ -159,13 +173,17 @@ namespace Flashcards
                         }
                         tableVisualisationEngine.DisplayStacks(tableData);
                     }
+                    connection.Close();
                 }
             }
         }
 
         internal void GetStudySessions()
         {
-            Console.WriteLine();
+
+            Console.WriteLine("work in progress");
+
         }
+
     }
 }

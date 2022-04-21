@@ -6,8 +6,6 @@
 
         public string StackName { get; set; }
 
-        public FlashCard[] Flashcards { get; set; }
-
         public string DateTimeCreation { get; set; }
 
         public string DateTimeEdit { get; set; }

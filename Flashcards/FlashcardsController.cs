@@ -86,6 +86,9 @@
                     case 5:
                         sqlController.UpdateFlashcard();
                         break;
+                    case 6:
+                        sqlController.ShowFlashcards();
+                        break;
                     default:
                         outputController.DisplayMessage("InvalidInput");
                         break;

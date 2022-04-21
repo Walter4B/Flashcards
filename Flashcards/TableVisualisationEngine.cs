@@ -16,7 +16,7 @@ namespace Flashcards
         {
             ConsoleTableBuilder
                     .From(ListOfTableLines)
-                    .WithColumn("Front of Card", "Back of Card", "Creation Date", "Edit Date")
+                    .WithColumn("Id", "Front of Card", "Back of Card", "Stack Reference", "Creation Date", "Edit Date")
                     .WithFormat(ConsoleTableBuilderFormat.Alternative)
                     .ExportAndWriteLine();
         }
