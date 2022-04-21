@@ -7,7 +7,7 @@ namespace Flashcards
 {
     internal class SQLController
     {
-        string connectionString = ConfigurationManager.ConnectionStrings["connectionKeyServer"].ConnectionString;
+        static string connectionString = ConfigurationManager.ConnectionStrings["connectionKeyServer"].ConnectionString;
         OutputController outputController = new OutputController();
         InputController inputController = new InputController();
         TableVisualisationEngine tableVisualisationEngine = new TableVisualisationEngine();
@@ -18,8 +18,13 @@ namespace Flashcards
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    outputController.DisplayMessage("ChoseStack"); //TOOD check if stack exists
+                    outputController.DisplayMessage("ChoseStack");
                     int stackRef = inputController.GetUserInputInt();
+                    while (!CheckIfStackExists(stackRef))
+                    {
+                        outputController.DisplayMessage("StackNotExist");
+                        stackRef = inputController.GetUserInputInt();
+                    }
                     bool running = true;
                     while (running)
                     {
@@ -187,6 +192,24 @@ namespace Flashcards
                         tableVisualisationEngine.DisplayStacks(tableData);
                     }
                     connection.Close();
+                }
+            }
+        }
+
+        internal static bool CheckIfStackExists(int id)
+        {
+            string CommandText = "SELECT * FROM StackTable WHERE Id = @Id";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            { 
+                using (SqlCommand command = new SqlCommand(CommandText, connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@Id", id);
+                    SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection);
+                    if(reader.HasRows)
+                        return true;
+                    else
+                        return false;
                 }
             }
         }
