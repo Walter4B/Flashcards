@@ -274,9 +274,7 @@ namespace Flashcards
                             currentAnswer = inputController.GetUserInputString();
                             if (currentAnswer == backData.Last().Last().ToString())
                             {
-                                Console.WriteLine(backData.LastOrDefault().Last().ToString() + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                                 studySession.Score++;
-                                Console.WriteLine("SCORE " + studySession.Score);
                             }
                             frontData.Clear();
                         }
@@ -284,8 +282,6 @@ namespace Flashcards
                     connection.Close();
                     int numOfQuestions = backData.Count;
                     string stackName = GetSingleStackName(studySession.StackId);
-                    Console.WriteLine("NUMBER OF QUESTIONS =" + backData.Count);
-                    Console.WriteLine("CORRECT ANSWERS =" + studySession.Score);
                     studySession.StudyDate = DateTime.Now.ToString();
                     CommandText = $"INSERT INTO StudyTable (Subject, NumberOfQuestions, Score, StudyDate) VALUES ('{stackName}','{studySession.Score}','{numOfQuestions}','{studySession.StudyDate}')";
                     command.CommandText = CommandText;
