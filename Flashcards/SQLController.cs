@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Linq;
 
 
 namespace Flashcards
@@ -68,7 +69,7 @@ namespace Flashcards
             }
         }
 
-        internal void UpdateFlashcard() 
+        internal void UpdateFlashcard()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -119,19 +120,26 @@ namespace Flashcards
 
         internal void CreateStack()
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                using (SqlCommand command = connection.CreateCommand())
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    connection.Open();
-                    Models.Stack stack = new Models.Stack();
-                    outputController.DisplayMessage("CreateStackInputName");
-                    stack.StackName = inputController.GetUserInputString();
-                    stack.DateTimeCreation = DateTime.Now.ToString();
-                    command.CommandText = $"INSERT INTO StackTable (Name, CreationDate, EditDate) VALUES('{stack.StackName}','{stack.DateTimeCreation}','{stack.DateTimeCreation}')";
-                    command.ExecuteNonQuery();
-                    connection.Close();
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        connection.Open();
+                        Models.Stack stack = new Models.Stack();
+                        outputController.DisplayMessage("CreateStackInputName");
+                        stack.StackName = inputController.GetUserInputString();
+                        stack.DateTimeCreation = DateTime.Now.ToString();
+                        command.CommandText = $"INSERT INTO StackTable (Name, CreationDate, EditDate) VALUES('{stack.StackName}','{stack.DateTimeCreation}','{stack.DateTimeCreation}')";
+                        command.ExecuteNonQuery();
+                        connection.Close();
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                outputController.DisplayMessage("CreateStackNameExists");
             }
         }
 
@@ -200,13 +208,13 @@ namespace Flashcards
         {
             string CommandText = "SELECT * FROM StackTable WHERE Id = @Id";
             using (SqlConnection connection = new SqlConnection(connectionString))
-            { 
+            {
                 using (SqlCommand command = new SqlCommand(CommandText, connection))
                 {
                     connection.Open();
                     command.Parameters.AddWithValue("@Id", id);
                     SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection);
-                    if(reader.HasRows)
+                    if (reader.HasRows)
                         return true;
                     else
                         return false;
@@ -216,10 +224,100 @@ namespace Flashcards
 
         internal void GetStudySessions()
         {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    string CommandText = $"SELECT * FROM StudyTable";
+                    command.CommandText = CommandText;
+                    using (SqlDataReader sqlDataReader = command.ExecuteReader())
+                    {
+                        var tableData = new List<List<object>> { };
 
-            Console.WriteLine("work in progress");
-
+                        while (sqlDataReader.Read())
+                        {
+                            tableData.Add(new List<object> { sqlDataReader.GetString(1), sqlDataReader.GetInt32(2), sqlDataReader.GetInt32(3), sqlDataReader.GetString(4) });
+                        }
+                        tableVisualisationEngine.DisplayStudySessions(tableData);
+                    }
+                    connection.Close();
+                }
+            }
         }
 
+        internal void StartStudySessions()
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    SqlDataReader sqlDataReader;
+                    Models.StudySession studySession = new Models.StudySession();
+                    outputController.DisplayMessage("ChoseStack");
+                    studySession.StackId = inputController.GetUserInputInt();
+                    string CommandText = $"SELECT * FROM FlashcardTable WHERE StackId = '{studySession.StackId}'";
+                    command.CommandText = CommandText;
+                    connection.Open();
+                    var frontData = new List<List<object>> { };
+                    var backData = new List<List<object>> { };
+                    using (sqlDataReader = command.ExecuteReader())
+                    {
+                        string currentAnswer;
+                        studySession.Score = 0;
+                        while (sqlDataReader.Read())
+                        {
+                            frontData.Add(new List<object> { sqlDataReader.GetString(1) });
+                            tableVisualisationEngine.DisplayFlashcardStudy(frontData);
+                            backData.Add(new List<object> { sqlDataReader.GetString(2) });
+                            outputController.DisplayMessage("StudyInputAnswer");
+                            currentAnswer = inputController.GetUserInputString();
+                            if (currentAnswer == backData.Last().Last().ToString())
+                            {
+                                Console.WriteLine(backData.LastOrDefault().Last().ToString() + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                                studySession.Score++;
+                                Console.WriteLine("SCORE " + studySession.Score);
+                            }
+                            frontData.Clear();
+                        }
+                    }
+                    connection.Close();
+                    int numOfQuestions = backData.Count;
+                    string stackName = GetSingleStackName(studySession.StackId);
+                    Console.WriteLine("NUMBER OF QUESTIONS =" + backData.Count);
+                    Console.WriteLine("CORRECT ANSWERS =" + studySession.Score);
+                    studySession.StudyDate = DateTime.Now.ToString();
+                    CommandText = $"INSERT INTO StudyTable (Subject, NumberOfQuestions, Score, StudyDate) VALUES ('{stackName}','{studySession.Score}','{numOfQuestions}','{studySession.StudyDate}')";
+                    command.CommandText = CommandText;
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+        }
+
+        internal string GetSingleStackName(int id)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    Models.StudySession studySession = new Models.StudySession();
+                    string stackName = "null";
+                    SqlDataReader sqlDataReader;
+                    connection.Open();
+                    string CommandText = $"SELECT * FROM StackTable WHERE Id = '{id}'";
+                    command.CommandText = CommandText;
+                    using (sqlDataReader = command.ExecuteReader())
+                    {
+                        sqlDataReader.Read();
+                        stackName = sqlDataReader.GetString(1).ToString();
+                        sqlDataReader.Close();
+                    }
+                    connection.Close();
+                    return stackName;
+                }
+            }
+        }
     }
 }

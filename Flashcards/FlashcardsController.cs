@@ -5,7 +5,6 @@
         InputController inputController = new InputController();
         OutputController outputController = new OutputController();
         SQLController sqlController = new SQLController();
-        StudyController studyController = new StudyController();   
 
         internal void MainMenu()
         {
@@ -109,10 +108,10 @@
                         programRunning = false;
                         break;
                     case 1:
-                        studyController.NewStudySession(); //TODO
+                        sqlController.StartStudySessions();
                         break;
                     case 2:
-                        sqlController.GetStudySessions(); //TODO
+                        sqlController.GetStudySessions();
                         break;
                     default:
                         outputController.DisplayMessage("InvalidInput");

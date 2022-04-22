@@ -76,6 +76,19 @@ namespace Flashcards
                       ";
 
                     command.ExecuteNonQuery();
+
+                    command.CommandText =
+                      $@" IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'StudyTable')
+                        CREATE TABLE StudyTable (
+	                      Id int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+                          Subject varchar(30) NOT NULL,
+	                      NumberOfQuestions int NOT NULL,
+                          Score int NOT NULL,
+                          StudyDate varchar(30) NOT NULL,
+                         );
+                      ";
+
+                    command.ExecuteNonQuery();
                 }
             }
         }
