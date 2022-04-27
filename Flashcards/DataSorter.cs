@@ -8,32 +8,32 @@ namespace Flashcards
 {
     internal class DataSorter
     {
-        internal List<List<object>> GetListsWithAverages(List<Models.DataForReport> inputList)
+        internal List<List<object>> GetListsWithAverages(List<Models.DataForReport> inputedList)
         {
             List<List<object>> sortedList = new List<List<object>>();
             List<string> listOfSubjects = new List<string>();
           
-                foreach (var element in inputList)
+                foreach (var property in inputedList)
                 {
-                    listOfSubjects.Add(element.name);
+                    listOfSubjects.Add(property.name);
                 }
                 listOfSubjects = listOfSubjects.Distinct().ToList();
 
-            foreach (var element in listOfSubjects)
+            foreach (var subject in listOfSubjects)
             {
-                sortedList.Add(new List<object> { element, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+                sortedList.Add(new List<object> { subject, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
             }
 
-            foreach (var element in inputList)
+            foreach (var property in inputedList)
             {
                 for (int i = 0; i < listOfSubjects.Count; i++)
                 {
-                    if (element.name == sortedList[i][0].ToString())
+                    if (property.name == sortedList[i][0].ToString())
                     {
-                        string tempstring = element.sessionDate;
+                        string tempstring = property.sessionDate;
                         string tempSubstring = $"{tempstring[3]}" + $"{tempstring[4]}";
                         int temp2 = Convert.ToInt32(tempSubstring);
-                        int temp = Convert.ToInt32(sortedList[i][temp2]) + Convert.ToInt32(element.score);
+                        int temp = Convert.ToInt32(sortedList[i][temp2]) + Convert.ToInt32(property.score);
                         sortedList[i][temp2] = temp;
                     }
                 }
