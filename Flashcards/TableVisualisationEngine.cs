@@ -38,5 +38,14 @@ namespace Flashcards
                     .WithFormat(ConsoleTableBuilderFormat.Alternative)
                     .ExportAndWriteLine();
         }
+
+        internal void DisplaySessionsInMounths(List<List<Object>> ListOfTableLines)
+        {
+            ConsoleTableBuilder
+                .From(ListOfTableLines)
+                .WithColumn("StackName", "January", "February", "April", "March", "May", "June", "July", "August", "September", "October", "November", "December")
+                .WithFormat(ConsoleTableBuilderFormat.Alternative)
+                .ExportAndWriteLine();
+        }
     }
 }

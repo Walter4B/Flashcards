@@ -23,6 +23,9 @@
                     case 2:
                         StudyMenu();
                         break;
+                    case 3:
+                        ReportMenu();
+                        break;
                     default:
                         outputController.DisplayMessage("InvalidInput");
                         break;
@@ -96,7 +99,7 @@
             }
         }
 
-        internal void StudyMenu() //TODO
+        internal void StudyMenu()
         {
             bool programRunning = true;
             while (programRunning)
@@ -117,6 +120,30 @@
                         outputController.DisplayMessage("InvalidInput");
                         break;
 
+                }
+            }
+        }
+
+        internal void ReportMenu()
+        {
+            bool programRunning = true;
+            while (programRunning)
+            {
+            outputController.DisplayMessage("ReportMenu");
+                switch (inputController.GetUserInputInt())
+                {
+                    case 0:
+                        programRunning = false;
+                        break;
+                    case 1:
+                        sqlController.DisplayNumberOfMounthlySessions();
+                        break;
+                    case 2:
+                        sqlController.DisplayMounthlyAvarageScore();
+                        break;
+                    default:
+                        outputController.DisplayMessage("InvalidInput");
+                        break;
                 }
             }
         }

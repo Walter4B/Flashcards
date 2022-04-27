@@ -11,6 +11,7 @@ namespace Flashcards
         static string connectionString = ConfigurationManager.ConnectionStrings["connectionKeyServer"].ConnectionString;
         OutputController outputController = new OutputController();
         InputController inputController = new InputController();
+        DataSorter sorter = new DataSorter();
         TableVisualisationEngine tableVisualisationEngine = new TableVisualisationEngine();
 
         internal void CreateFlashCard()
@@ -315,5 +316,57 @@ namespace Flashcards
                 }
             }
         }
+
+        internal void DisplayNumberOfMounthlySessions()
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    string CommandText = "SELECT * FROM StudyTable";
+                    command.CommandText = CommandText;
+                    List<Models.DataForReport> tableData = new List<Models.DataForReport>();
+                    using (SqlDataReader sqlDataReader = command.ExecuteReader())
+                    {
+
+                        while (sqlDataReader.Read())
+                        {
+                            tableData.Add(new Models.DataForReport { name = sqlDataReader.GetString(1), score = sqlDataReader.GetInt32(3), sessionDate = sqlDataReader.GetString(4) });
+                        }
+                    }
+                    List<List<object>> sortedList = sorter.GetListsWithSumOfSessions(tableData);
+
+                    //tableVisualisationEngine.DisplaySessionsInMounths(sortedList);
+                }
+            }
+        }
+
+        internal void DisplayMounthlyAvarageScore()
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    string CommandText = "SELECT * FROM StudyTable";
+                    command.CommandText = CommandText;
+                    List<Models.DataForReport> tableData = new List<Models.DataForReport>();
+
+                    using (SqlDataReader sqlDataReader = command.ExecuteReader())
+                    {
+                        while (sqlDataReader.Read())
+                        {
+                            tableData.Add(new Models.DataForReport { name = sqlDataReader.GetString(1), score = sqlDataReader.GetInt32(2), sessionDate = sqlDataReader.GetString(4) });
+                        }
+                    }
+                    List<List<object>> sortedList = sorter.GetListsWithAverages(tableData);
+
+                    tableVisualisationEngine.DisplaySessionsInMounths(sortedList);
+                }
+            }
+        }
     }
 }
+
+
