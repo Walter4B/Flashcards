@@ -10,14 +10,73 @@ namespace Flashcards
     {
         InputController inputController = new InputController();
         OutputController outputController = new OutputController();
+        internal List<List<object>> GetListsWithAverages(List<Models.DataForReport> inputList)
+        {
+            List<Models.MonthlyValues> propertyList = AdjustData(inputList);
+            if (!propertyList.Any())
+            {
+                return null;
+            }
+            List<List<object>> outputList = new List<List<object>>();
+            foreach (var property in propertyList)
+            {
+                outputList.Add(new List<object> {
+                    property.name,
+                    property.Jan.Sum() / (property.Jan.Count == 0 ? 1 : property.Jan.Count),
+                    property.Feb.Sum() / (property.Feb.Count == 0 ? 1 : property.Feb.Count),
+                    property.Mar.Sum() / (property.Mar.Count == 0 ? 1 : property.Mar.Count),
+                    property.Apr.Sum() / (property.Apr.Count == 0 ? 1 : property.Apr.Count),
+                    property.May.Sum() / (property.May.Count == 0 ? 1 : property.May.Count),
+                    property.Jun.Sum() / (property.Jun.Count == 0 ? 1 : property.Jun.Count),
+                    property.Jul.Sum() / (property.Jul.Count == 0 ? 1 : property.Jul.Count),
+                    property.Aug.Sum() / (property.Aug.Count == 0 ? 1 : property.Aug.Count),
+                    property.Sep.Sum() / (property.Sep.Count == 0 ? 1 : property.Sep.Count),
+                    property.Oct.Sum() / (property.Oct.Count == 0 ? 1 : property.Oct.Count),
+                    property.Nov.Sum() / (property.Nov.Count == 0 ? 1 : property.Nov.Count),
+                    property.Dec.Sum() / (property.Dec.Count == 0 ? 1 : property.Dec.Count),
 
-        internal List<List<object>> GetListsWithAverages(List<Models.DataForReport> inputedList)
+                }); ;
+            }
+            return outputList;
+
+        }
+        internal List<List<object>> GetListsWithSumOfSessions(List<Models.DataForReport> inputList)
+        {
+            if (!inputList.Any())
+            {
+                return null;
+            }
+            List<Models.MonthlyValues> propertyList = AdjustData(inputList);
+            List<List<object>> outputList = new List<List<object>>();
+            foreach (var property in propertyList)
+            {
+                outputList.Add(new List<object> {
+                    property.name,
+                    property.Jan.Count,
+                    property.Feb.Count,
+                    property.Mar.Count,
+                    property.Apr.Count,
+                    property.May.Count,
+                    property.Jun.Count,
+                    property.Jul.Count,
+                    property.Aug.Count,
+                    property.Sep.Count,
+                    property.Oct.Count,
+                    property.Nov.Count,
+                    property.Dec.Count
+
+                }); ;
+            }
+            return outputList;
+        }
+
+        internal List<Models.MonthlyValues> AdjustData(List<Models.DataForReport> inputedList)
         {
             outputController.DisplayMessage("ChoseYear");
             int year = inputController.GetUserInputInt();
 
 
-            List<List<object>> outputList = new List<List<object>>();
+            
             List<Models.DataForReport> adjustedInputedList = new List<Models.DataForReport>();
             List<Models.MonthlyValues> propertyList = new List<Models.MonthlyValues>();
             List<string> listOfSubjects = new List<string>();
@@ -114,27 +173,8 @@ namespace Flashcards
                     }
                 }
             }
-            int[] tempArrayOfMounthAvarages = new int[2];
-            foreach (var property in propertyList)
-            {
-                    tempArrayOfMounthAvarages = new int[] { property.May.Sum() / property.May.Count, property.Apr.Sum() / property.Apr.Count };
-            }
-
-            foreach (int x in tempArrayOfMounthAvarages)
-            {
-                if (x != null)
-                {
-                Console.WriteLine(x);
-                }
-            }
-
-            return outputList;
-        }
-
-        internal List<List<object>> GetListsWithSumOfSessions(List<Models.DataForReport> inputList)
-        {
-            List<Models.MonthlyValues> sortedList;
-            return null;
+            
+            return propertyList;
         }
 
         internal string GetYear(string dateString)
