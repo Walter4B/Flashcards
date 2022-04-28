@@ -332,12 +332,19 @@ namespace Flashcards
 
                         while (sqlDataReader.Read())
                         {
-                            tableData.Add(new Models.DataForReport { name = sqlDataReader.GetString(1), score = sqlDataReader.GetInt32(3), sessionDate = sqlDataReader.GetString(4) });
+                            tableData.Add(new Models.DataForReport { name = sqlDataReader.GetString(1), score = sqlDataReader.GetInt32(2), sessionDate = sqlDataReader.GetString(4) });
                         }
                     }
                     List<List<object>> sortedList = sorter.GetListsWithSumOfSessions(tableData);
 
-                    //tableVisualisationEngine.DisplaySessionsInMounths(sortedList);
+                    if (sortedList == null)
+                    {
+                        outputController.DisplayMessage("NoDataForYear");
+                    }
+                    else
+                    {
+                        tableVisualisationEngine.DisplaySessionsInMounths(sortedList);
+                    }
                 }
             }
         }
@@ -362,7 +369,14 @@ namespace Flashcards
                     }
                     List<List<object>> sortedList = sorter.GetListsWithAverages(tableData);
 
-                    tableVisualisationEngine.DisplaySessionsInMounths(sortedList);
+                    if (sortedList == null)
+                    {
+                        outputController.DisplayMessage("NoDataForYear");
+                    }
+                    else
+                    { 
+                        tableVisualisationEngine.DisplaySessionsInMounths(sortedList);
+                    }
                 }
             }
         }

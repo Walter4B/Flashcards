@@ -4,30 +4,30 @@
     {
         public string name { get; set; }
 
-        public string year { get; set; }
+        public int year { get; set; }
 
-        public int Jan { get; set; }
+        public List<int> Jan { get; set; }
 
-        public int Feb { get; set; }
+        public List<int> Feb { get; set; }
 
-        public int Mar { get; set; }
+        public List<int> Mar { get; set; }
 
-        public int Apr { get; set; }
+        public List<int> Apr { get; set; }
 
-        public int May { get; set; }
+        public List<int> May { get; set; }
 
-        public int Jun { get; set; }
+        public List<int> Jun { get; set; }
 
-        public int Jul { get; set; }
+        public List<int> Jul { get; set; }
 
-        public int Aug { get; set; }
+        public List<int> Aug { get; set; }
 
-        public int Sep { get; set; }
+        public List<int> Sep { get; set; }
 
-        public int Oct { get; set; }
+        public List<int> Oct { get; set; }
 
-        public int Nov { get; set; }
+        public List<int> Nov { get; set; }
 
-        public int Dec { get; set; }
+        public List<int> Dec { get; set; }
     }
 }
