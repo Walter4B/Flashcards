@@ -10,10 +10,11 @@ namespace Flashcards
     {
         InputController inputController = new InputController();
         OutputController outputController = new OutputController();
+
         internal List<List<object>> GetListsWithAverages(List<Models.DataForReport> inputList)
         {
             List<Models.MonthlyValues> propertyList = AdjustData(inputList);
-            if (!propertyList.Any())
+            if (propertyList == null)
             {
                 return null;
             }
@@ -38,15 +39,15 @@ namespace Flashcards
                 }); ;
             }
             return outputList;
-
         }
+
         internal List<List<object>> GetListsWithSumOfSessions(List<Models.DataForReport> inputList)
         {
-            if (!inputList.Any())
+            List<Models.MonthlyValues> propertyList = AdjustData(inputList);
+            if (propertyList == null)
             {
                 return null;
             }
-            List<Models.MonthlyValues> propertyList = AdjustData(inputList);
             List<List<object>> outputList = new List<List<object>>();
             foreach (var property in propertyList)
             {
@@ -74,8 +75,6 @@ namespace Flashcards
         {
             outputController.DisplayMessage("ChoseYear");
             int year = inputController.GetUserInputInt();
-
-
             
             List<Models.DataForReport> adjustedInputedList = new List<Models.DataForReport>();
             List<Models.MonthlyValues> propertyList = new List<Models.MonthlyValues>();
@@ -99,7 +98,6 @@ namespace Flashcards
                 return null;
             }
             listOfSubjects = listOfSubjects.Distinct().ToList();
-
 
             foreach (var subject in listOfSubjects)
             {
@@ -173,7 +171,6 @@ namespace Flashcards
                     }
                 }
             }
-            
             return propertyList;
         }
 
