@@ -28,7 +28,8 @@ namespace Flashcards
                     connection.Open();
                     string commandText = @$"SELECT * FROM StudyTable
                                             PIVOT (AVG(Score)
-                                                FOR Mounth in ([Jan],[Feb],[Mar],[Apr],[May],[Jun],[Jul],[Aug],[Sep],[Oct],[Nov],[Dec])) PivotedTable";
+                                                FOR Mounth in ([Jan],[Feb],[Mar],[Apr],[May],[Jun],[Jul],[Aug],[Sep],[Oct],[Nov],[Dec])) SELECT * INTO PivotedTable
+                                                SELECT ISNULL(Score, 0 ) FROM PivotedTable";
 
                     command.CommandText = commandText;
                     command.ExecuteNonQuery();
@@ -56,15 +57,23 @@ namespace Flashcards
                     connection.Close();
                 }
             }
-        } 
+        }
 
         internal void GetListsWithSumOfSessionsSQLVersion(List<Models.DataForReport> tableData)
         {
-            string commandText = $"SELECT * FROM StudyTable (SELECT ";
+            outputController.DisplayMessage("ChoseYear");
+            int year = inputController.GetUserInputInt();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    string commandText = @$"SELECT * FROM StudyTable
+                                            PIVOT (COUNT(Score)
+                                                FOR Mounth in ([Jan],[Feb],[Mar],[Apr],[May],[Jun],[Jul],[Aug],[Sep],[Oct],[Nov],[Dec])) PivotedTable";
+                }
+            }
         }
     }
-}/*
-Subject varchar(30) NOT NULL,
-                          NumberOfQuestions int NOT NULL,
-                          Score int NOT NULL,
-                          StudyDate*/
+}
