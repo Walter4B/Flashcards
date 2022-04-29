@@ -12,6 +12,7 @@ namespace Flashcards
         OutputController outputController = new OutputController();
         InputController inputController = new InputController();
         DataSorter sorter = new DataSorter();
+        DataSorterSQL sorterSQL = new DataSorterSQL();
         TableVisualisationEngine tableVisualisationEngine = new TableVisualisationEngine();
 
         internal void CreateFlashCard()
@@ -284,7 +285,8 @@ namespace Flashcards
                     int numOfQuestions = backData.Count;
                     string stackName = GetSingleStackName(studySession.StackId);
                     studySession.StudyDate = DateTime.Now.ToString();
-                    CommandText = $"INSERT INTO StudyTable (Subject, NumberOfQuestions, Score, StudyDate) VALUES ('{stackName}','{studySession.Score}','{numOfQuestions}','{studySession.StudyDate}')";
+                    CommandText = $"INSERT INTO StudyTable (Subject, NumberOfQuestions, Score, StudyDate, Mounth, Year) " +
+                        $"VALUES ('{stackName}','{studySession.Score}','{numOfQuestions}','{studySession.StudyDate}','{DateTime.Now.ToString("MMM")}' ,'{DateTime.Now.Year}')";
                     command.CommandText = CommandText;
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -335,16 +337,8 @@ namespace Flashcards
                             tableData.Add(new Models.DataForReport { name = sqlDataReader.GetString(1), score = sqlDataReader.GetInt32(2), sessionDate = sqlDataReader.GetString(4) });
                         }
                     }
-                    List<List<object>> sortedList = sorter.GetListsWithSumOfSessions(tableData);
-
-                    if (sortedList == null)
-                    {
-                        outputController.DisplayMessage("NoDataForYear");
-                    }
-                    else
-                    {
-                        tableVisualisationEngine.DisplaySessionsInMounths(sortedList);
-                    }
+                    //sorter.GetListsWithSumOfSessions(tableData); //C# solution
+                    sorterSQL.GetListsWithSumOfSessionsSQLVersion(tableData);//SQL solution
                 }
             }
         }
@@ -367,16 +361,8 @@ namespace Flashcards
                             tableData.Add(new Models.DataForReport { name = sqlDataReader.GetString(1), score = sqlDataReader.GetInt32(2), sessionDate = sqlDataReader.GetString(4) });
                         }
                     }
-                    List<List<object>> sortedList = sorter.GetListsWithAverages(tableData);
-
-                    if (sortedList == null)
-                    {
-                        outputController.DisplayMessage("NoDataForYear");
-                    }
-                    else
-                    { 
-                        tableVisualisationEngine.DisplaySessionsInMounths(sortedList);
-                    }
+                    //sorter.GetListsWithAverages(tableData); //C# solution
+                    sorterSQL.GetListsWithAveragesSQLVesrion(tableData);//SQL solution
                 }
             }
         }

@@ -6,28 +6,28 @@
 
         public int year { get; set; }
 
-        public List<int> Jan { get; set; }
+        public List<float> Jan { get; set; }
 
-        public List<int> Feb { get; set; }
+        public List<float> Feb { get; set; }
 
-        public List<int> Mar { get; set; }
+        public List<float> Mar { get; set; }
 
-        public List<int> Apr { get; set; }
+        public List<float> Apr { get; set; }
 
-        public List<int> May { get; set; }
+        public List<float> May { get; set; }
 
-        public List<int> Jun { get; set; }
+        public List<float> Jun { get; set; }
 
-        public List<int> Jul { get; set; }
+        public List<float> Jul { get; set; }
 
-        public List<int> Aug { get; set; }
+        public List<float> Aug { get; set; }
 
-        public List<int> Sep { get; set; }
+        public List<float> Sep { get; set; }
 
-        public List<int> Oct { get; set; }
+        public List<float> Oct { get; set; }
 
-        public List<int> Nov { get; set; }
+        public List<float> Nov { get; set; }
 
-        public List<int> Dec { get; set; }
+        public List<float> Dec { get; set; }
     }
 }

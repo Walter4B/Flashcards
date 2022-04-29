@@ -10,18 +10,21 @@ namespace Flashcards
     {
         InputController inputController = new InputController();
         OutputController outputController = new OutputController();
+        TableVisualisationEngine tableVisualisationEngine = new TableVisualisationEngine();
 
-        internal List<List<object>> GetListsWithAverages(List<Models.DataForReport> inputList)
+        internal void GetListsWithAverages(List<Models.DataForReport> inputList)
         {
             List<Models.MonthlyValues> propertyList = AdjustData(inputList);
             if (propertyList == null)
             {
-                return null;
+                CheckIfYearExists(null);
             }
-            List<List<object>> outputList = new List<List<object>>();
-            foreach (var property in propertyList)
+            else
             {
-                outputList.Add(new List<object> {
+                List<List<object>> outputList = new List<List<object>>();
+                foreach (var property in propertyList)
+                {
+                    outputList.Add(new List<object> {
                     property.name,
                     property.Jan.Sum() / (property.Jan.Count == 0 ? 1 : property.Jan.Count),
                     property.Feb.Sum() / (property.Feb.Count == 0 ? 1 : property.Feb.Count),
@@ -37,21 +40,24 @@ namespace Flashcards
                     property.Dec.Sum() / (property.Dec.Count == 0 ? 1 : property.Dec.Count),
 
                 }); ;
+                }
+                CheckIfYearExists(outputList);
             }
-            return outputList;
         }
 
-        internal List<List<object>> GetListsWithSumOfSessions(List<Models.DataForReport> inputList)
+        internal void GetListsWithSumOfSessions(List<Models.DataForReport> inputList)
         {
             List<Models.MonthlyValues> propertyList = AdjustData(inputList);
             if (propertyList == null)
             {
-                return null;
+                CheckIfYearExists(null);
             }
-            List<List<object>> outputList = new List<List<object>>();
-            foreach (var property in propertyList)
+            else
             {
-                outputList.Add(new List<object> {
+                List<List<object>> outputList = new List<List<object>>();
+                foreach (var property in propertyList)
+                {
+                    outputList.Add(new List<object> {
                     property.name,
                     property.Jan.Count,
                     property.Feb.Count,
@@ -67,8 +73,9 @@ namespace Flashcards
                     property.Dec.Count
 
                 }); ;
+                }
+                CheckIfYearExists(outputList);
             }
-            return outputList;
         }
 
         internal List<Models.MonthlyValues> AdjustData(List<Models.DataForReport> inputedList)
@@ -104,18 +111,18 @@ namespace Flashcards
                 propertyList.Add(new Models.MonthlyValues
                 {
                     name = subject,
-                    Jan = new List<int>(),
-                    Feb = new List<int>(),
-                    Mar = new List<int>(),
-                    Apr = new List<int>(),
-                    May = new List<int>(),
-                    Jun = new List<int>(),
-                    Jul = new List<int>(),
-                    Aug = new List<int>(),
-                    Sep = new List<int>(),
-                    Oct = new List<int>(),
-                    Nov = new List<int>(),
-                    Dec = new List<int>()
+                    Jan = new List<float>(),
+                    Feb = new List<float>(),
+                    Mar = new List<float>(),
+                    Apr = new List<float>(),
+                    May = new List<float>(),
+                    Jun = new List<float>(),
+                    Jul = new List<float>(),
+                    Aug = new List<float>(),
+                    Sep = new List<float>(),
+                    Oct = new List<float>(),
+                    Nov = new List<float>(),
+                    Dec = new List<float>()
                 });
             }
 
@@ -184,6 +191,18 @@ namespace Flashcards
         {
             string mounth = $"{dateString[3]}" + $"{dateString[4]}";
             return mounth;
+        }
+
+        internal void CheckIfYearExists(List<List<object>> sortedList)
+        {
+            if (sortedList == null)
+            {
+                outputController.DisplayMessage("NoDataForYear");
+            }
+            else
+            {
+                tableVisualisationEngine.DisplaySessionsInMounths(sortedList);
+            }
         }
     }
 }
