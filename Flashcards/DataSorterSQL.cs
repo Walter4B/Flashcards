@@ -27,13 +27,19 @@ namespace Flashcards
                 {
                     connection.Open();
                     string commandText = @$"SELECT * FROM StudyTable
-                                            PIVOT (AVG(Score)
-                                                FOR Mounth in ([Jan],[Feb],[Mar],[Apr],[May],[Jun],[Jul],[Aug],[Sep],[Oct],[Nov],[Dec])) SELECT * INTO PivotedTable
-                                                SELECT ISNULL(Score, 0 ) FROM PivotedTable";
+                                            (
+                                                SELECT 
+                                                    Subject AS [Subject1],
+                                                    Mounth AS [Mounth1],
+                                                    Score AS [Score1]
+                                            ) AS Src;
+                                            PIVOT
+                                            (
+                                                AVG([Score1])
+                                                FOR[Mounth1]
+                                                IN([Jan],[Feb],[Mar],[Apr],[May],[Jun],[Jul],[Aug],[Sep],[Oct],[Nov],[Dec])
+                                            ) AS PivotedTable";
 
-                    command.CommandText = commandText;
-                    command.ExecuteNonQuery();
-                    commandText = "SELECT * FROM PivotedTable";
                     command.CommandText = commandText;
                     command.ExecuteNonQuery();
 
