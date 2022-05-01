@@ -34,7 +34,7 @@ namespace Flashcards
         {
             ConsoleTableBuilder
                     .From(ListOfTableLines)
-                    .WithColumn("Subject", "Score", "NumberOfQuestions", "Study Date")
+                    .WithColumn("Subject", "NumberOfQuestions","Score", "Study Date")
                     .WithFormat(ConsoleTableBuilderFormat.Alternative)
                     .ExportAndWriteLine();
         }
@@ -43,7 +43,7 @@ namespace Flashcards
         {
             ConsoleTableBuilder
                 .From(ListOfTableLines)
-                .WithColumn("StackName", "January", "February", "April", "March", "May", "June", "July", "August", "September", "October", "November", "December")
+                .WithColumn("StackName", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
                 .WithFormat(ConsoleTableBuilderFormat.Alternative)
                 .ExportAndWriteLine();
         }

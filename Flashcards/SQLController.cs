@@ -37,7 +37,7 @@ namespace Flashcards
                         flashCard.FlashcardFront = inputController.GetUserInputString();
                         outputController.DisplayMessage("CreateFlashcardInputBack");
                         flashCard.FlashcardBack = inputController.GetUserInputString();
-                        flashCard.DateTimeCreation = DateTime.Now.ToString();
+                        flashCard.DateTimeCreation = DateTime.Now.ToString("yyyyMMddHHmmss");
                         command.CommandText = $@"INSERT INTO FlashcardTable (FlashcardFront, FlashcardBack, DateTimeCreation, DateTimeEdit, StackId) VALUES('{flashCard.FlashcardFront}','{flashCard.FlashcardBack}','{flashCard.DateTimeCreation}','{flashCard.DateTimeCreation}','{flashCard.StackReference}')";
                         connection.Open();
                         command.ExecuteNonQuery();
@@ -85,7 +85,7 @@ namespace Flashcards
                     string frontOfCard = inputController.GetUserInputString();
                     outputController.DisplayMessage("CreateFlashcardInputBack");
                     string backOfCard = inputController.GetUserInputString();
-                    string editDate = DateTime.Now.ToString();
+                    string editDate = DateTime.Now.ToString("yyyyMMddHHmmss");
                     command.CommandText = $"UPDATE FlashcardTable SET FlashcardFront ='{frontOfCard}', FlashcardBack ='{backOfCard}', DateTimeEdit ='{editDate}' WHERE ID = '{id}'";
                     command.ExecuteNonQuery();
                     connection.Close();
@@ -132,7 +132,7 @@ namespace Flashcards
                         Models.Stack stack = new Models.Stack();
                         outputController.DisplayMessage("CreateStackInputName");
                         stack.StackName = inputController.GetUserInputString();
-                        stack.DateTimeCreation = DateTime.Now.ToString();
+                        stack.DateTimeCreation = DateTime.Now.ToString("yyyyMMddHHmmss");
                         command.CommandText = $"INSERT INTO StackTable (Name, CreationDate, EditDate) VALUES('{stack.StackName}','{stack.DateTimeCreation}','{stack.DateTimeCreation}')";
                         command.ExecuteNonQuery();
                         connection.Close();
@@ -157,7 +157,7 @@ namespace Flashcards
                     int stackId = inputController.GetUserInputInt();
                     outputController.DisplayMessage("UpdateNewStackName");
                     string newName = inputController.GetUserInputString();
-                    string editDate = DateTime.Now.ToString();
+                    string editDate = DateTime.Now.ToString("yyyyMMddHHmmss");
                     command.CommandText = $"UPDATE StackTable SET Name ='{newName}', EditDate ='{editDate}' Where Id = {stackId}";
                     command.ExecuteNonQuery();
                     connection.Close();
@@ -284,9 +284,9 @@ namespace Flashcards
                     connection.Close();
                     int numOfQuestions = backData.Count;
                     string stackName = GetSingleStackName(studySession.StackId);
-                    studySession.StudyDate = DateTime.Now.ToString();
-                    CommandText = $"INSERT INTO StudyTable (Subject, NumberOfQuestions, Score, StudyDate, Mounth, Year) " +
-                        $"VALUES ('{stackName}','{studySession.Score}','{numOfQuestions}','{studySession.StudyDate}','{DateTime.Now.ToString("MMM")}' ,'{DateTime.Now.Year}')";
+                    studySession.StudyDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+                    CommandText = $"INSERT INTO StudyTable (Subject, NumberOfQuestions, Score, StudyDate) " +
+                        $"VALUES ('{stackName}','{numOfQuestions}','{studySession.Score}','{studySession.StudyDate}')";
                     command.CommandText = CommandText;
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -362,7 +362,7 @@ namespace Flashcards
                         }
                     }
                     //sorter.GetListsWithAverages(tableData); //C# solution
-                    sorterSQL.GetListsWithAveragesSQLVesrion(tableData);//SQL solution
+                    sorterSQL.GetListsWithAvarageSuccessSQLVesrion();//SQL solution
                 }
             }
         }

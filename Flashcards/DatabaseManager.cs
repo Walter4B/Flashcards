@@ -85,8 +85,6 @@ namespace Flashcards
 	                      NumberOfQuestions int NOT NULL,
                           Score int NOT NULL,
                           StudyDate varchar(30) NOT NULL,
-                          Mounth varchar(3) NOT NULL,
-                          Year int NOT NULL,
                          );
                       ";
 

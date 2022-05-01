@@ -89,7 +89,7 @@ namespace Flashcards
 
             foreach (var property in inputedList)
             {
-                if (year.ToString() == GetYear(property.sessionDate))
+                if (year.ToString() == GetYear(property.sessionDate.ToString()))
                 {
                     adjustedInputedList.Add(property);
                 }
@@ -132,7 +132,7 @@ namespace Flashcards
                 {
                     if (property.name == propertyList[i].name)
                     {
-                        int mounthValue = Convert.ToInt32(GetMounth(property.sessionDate));
+                        int mounthValue = Convert.ToInt32(GetMounth(property.sessionDate.ToString()));
                         int tempScore = Convert.ToInt32(property.score);
                         switch (mounthValue)
                         {
@@ -189,7 +189,7 @@ namespace Flashcards
 
         internal string GetMounth(string dateString)
         {
-            string mounth = $"{dateString[3]}" + $"{dateString[4]}";
+            string mounth = $"{dateString[0]}" + $"{dateString[1]}";
             return mounth;
         }
 

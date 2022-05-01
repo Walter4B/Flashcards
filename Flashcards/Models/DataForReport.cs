@@ -13,5 +13,6 @@ namespace Flashcards.Models
         public int score { get; set; }
 
         public string sessionDate { get; set; }
+
     }
 }
