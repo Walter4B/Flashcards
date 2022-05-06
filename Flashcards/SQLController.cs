@@ -38,7 +38,16 @@ namespace Flashcards
                         outputController.DisplayMessage("CreateFlashcardInputBack");
                         flashCard.FlashcardBack = inputController.GetUserInputString();
                         flashCard.DateTimeCreation = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-                        command.CommandText = $@"INSERT INTO FlashcardTable (FlashcardFront, FlashcardBack, DateTimeCreation, DateTimeEdit, StackId) VALUES('{flashCard.FlashcardFront}','{flashCard.FlashcardBack}','{flashCard.DateTimeCreation}','{flashCard.DateTimeCreation}','{flashCard.StackReference}')";
+                        command.CommandText = $@"INSERT INTO FlashcardTable 
+                                (FlashcardFront, FlashcardBack, DateTimeCreation, DateTimeEdit, StackId)
+                                VALUES (@Front, @Back, @Date, @Date, @StackReference)";
+                        command.Parameters.AddRange(new[]
+                            { 
+                                new SqlParameter("@Front", flashCard.FlashcardFront),
+                                new SqlParameter("@Back", flashCard.FlashcardBack),
+                                new SqlParameter("@Date", flashCard.DateTimeCreation),
+                                new SqlParameter("@StackReference", flashCard.StackReference)
+                            });
                         connection.Open();
                         command.ExecuteNonQuery();
                         connection.Close();
@@ -61,7 +70,8 @@ namespace Flashcards
                         connection.Open();
                         outputController.DisplayMessage("DeleteFlashcardInstruction");
                         int userInputFlashCard = inputController.GetUserInputInt();
-                        command.CommandText = $"DELETE FROM FlashcardTable WHERE ID = '{userInputFlashCard}';";
+                        command.CommandText = $"DELETE FROM FlashcardTable WHERE ID = @IdReference;";
+                        command.Parameters.Add(new SqlParameter("@IdReference", userInputFlashCard));
                         command.ExecuteNonQuery();
                         connection.Close();
                         outputController.DisplayMessage("ContinueDeleteing?");
@@ -86,7 +96,15 @@ namespace Flashcards
                     outputController.DisplayMessage("CreateFlashcardInputBack");
                     string backOfCard = inputController.GetUserInputString();
                     string editDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-                    command.CommandText = $"UPDATE FlashcardTable SET FlashcardFront ='{frontOfCard}', FlashcardBack ='{backOfCard}', DateTimeEdit ='{editDate}' WHERE ID = '{id}'";
+                    command.CommandText = @"UPDATE FlashcardTable 
+                                            SET FlashcardFront = @Front, FlashcardBack = @Back, DateTimeEdit = @EditDate WHERE ID = @StackReference";
+                    command.Parameters.AddRange(new[]
+                            {
+                                new SqlParameter("@Front", frontOfCard),
+                                new SqlParameter("@Back", backOfCard),
+                                new SqlParameter("@EditDate", editDate),
+                                new SqlParameter("@StackReference", id)
+                            });
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
@@ -103,8 +121,9 @@ namespace Flashcards
                     Models.FlashCard flashCard = new Models.FlashCard();
                     outputController.DisplayMessage("ChoseStack");
                     flashCard.StackReference = inputController.GetUserInputInt();
-                    string CommandText = $"SELECT * FROM FlashcardTable WHERE StackId = '{flashCard.StackReference}'";
+                    string CommandText = "SELECT * FROM FlashcardTable WHERE StackId = @StackReference";
                     command.CommandText = CommandText;
+                    command.Parameters.Add(new SqlParameter("@StackReference", flashCard.StackReference));
                     using (SqlDataReader sqlDataReader = command.ExecuteReader())
                     {
                         var tableData = new List<List<object>> { };
@@ -133,7 +152,14 @@ namespace Flashcards
                         outputController.DisplayMessage("CreateStackInputName");
                         stack.StackName = inputController.GetUserInputString();
                         stack.DateTimeCreation = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-                        command.CommandText = $"INSERT INTO StackTable (Name, CreationDate, EditDate) VALUES('{stack.StackName}','{stack.DateTimeCreation}','{stack.DateTimeCreation}')";
+                        command.CommandText = @"INSERT INTO StackTable 
+                                            (Name, CreationDate, EditDate)
+                                            VALUES (@StackName, @Date, @Date)";
+                        command.Parameters.AddRange(new[]
+                            {
+                                new SqlParameter("@StackName", stack.StackName),
+                                new SqlParameter("@Date", stack.DateTimeCreation),
+                            });
                         command.ExecuteNonQuery();
                         connection.Close();
                     }
@@ -158,7 +184,13 @@ namespace Flashcards
                     outputController.DisplayMessage("UpdateNewStackName");
                     string newName = inputController.GetUserInputString();
                     string editDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-                    command.CommandText = $"UPDATE StackTable SET Name ='{newName}', EditDate ='{editDate}' Where Id = {stackId}";
+                    command.CommandText = $"UPDATE StackTable SET Name = @NewName, EditDate = @EditDate Where Id = @StackReference";
+                    command.Parameters.AddRange(new[]
+                            {
+                                new SqlParameter("@NewName", newName),
+                                new SqlParameter("@EditDate", editDate),
+                                new SqlParameter("@StackReference", stackId)
+                            });
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
@@ -174,8 +206,9 @@ namespace Flashcards
                     connection.Open();
                     outputController.DisplayMessage("DeleteStackInstruction");
                     int userInputFlashCard = inputController.GetUserInputInt();
-                    command.CommandText = $"DELETE FROM StackTable WHERE ID = '{userInputFlashCard}';";
-                    command.CommandText = $"DELETE FROM FlashcardTable WHERE StackId = '{userInputFlashCard}';";
+                    command.CommandText = $"DELETE FROM StackTable WHERE ID = @IdReference;";
+                    command.CommandText = $"DELETE FROM FlashcardTable WHERE StackId = @IdReference;";
+                    command.Parameters.Add(new SqlParameter("@IdReference", userInputFlashCard));
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
@@ -258,7 +291,8 @@ namespace Flashcards
                     Models.StudySession studySession = new Models.StudySession();
                     outputController.DisplayMessage("ChoseStack");
                     studySession.StackId = inputController.GetUserInputInt();
-                    string CommandText = $"SELECT * FROM FlashcardTable WHERE StackId = '{studySession.StackId}'";
+                    string CommandText = $"SELECT * FROM FlashcardTable WHERE StackId = @IdReference";
+                    command.Parameters.Add(new SqlParameter("@IdReference", studySession.StackId));
                     command.CommandText = CommandText;
                     connection.Open();
                     var frontData = new List<List<object>> { };
@@ -305,8 +339,9 @@ namespace Flashcards
                     string stackName = "null";
                     SqlDataReader sqlDataReader;
                     connection.Open();
-                    string CommandText = $"SELECT * FROM StackTable WHERE Id = '{id}'";
+                    string CommandText = $"SELECT * FROM StackTable WHERE Id = @IdReference";
                     command.CommandText = CommandText;
+                    command.Parameters.Add(new SqlParameter("@IdReference", id));
                     using (sqlDataReader = command.ExecuteReader())
                     {
                         sqlDataReader.Read();

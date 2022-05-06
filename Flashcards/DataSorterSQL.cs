@@ -34,7 +34,7 @@ namespace Flashcards
                                                     DATENAME(MONTH, StudyDate) AS StudyMonth,
                                                     CAST(Score as float) AS [Score]
                                                     FROM StudyTable
-                                                    Where DATENAME(YEAR, StudyDate) = '{year}'
+                                                    Where DATENAME(YEAR, StudyDate) = @YearParameter
                                             ) AS Src
                                             PIVOT
                                             (
@@ -44,6 +44,7 @@ namespace Flashcards
                                             ) AS PivotedTable";
 
                     command.CommandText = commandText;
+                    command.Parameters.Add(new SqlParameter("@YearParameter", year));
                     command.ExecuteNonQuery();
                     using (SqlDataReader sqlDataReader = command.ExecuteReader())
                     {
@@ -90,7 +91,7 @@ namespace Flashcards
                                                     Subject AS [Subject],
                                                     CAST(Score as float) AS [Score]
                                                     FROM StudyTable
-                                                    Where DATENAME(YEAR, StudyDate) = '{year}'
+                                                    Where DATENAME(YEAR, StudyDate) = @YearParameter
                                             ) AS Src
                                             PIVOT
                                             (
@@ -100,6 +101,7 @@ namespace Flashcards
                                             ) AS PivotedTable";
 
                     command.CommandText = commandText;
+                    command.Parameters.Add(new SqlParameter("@YearParameter", year));
                     command.ExecuteNonQuery();
                     using (SqlDataReader sqlDataReader = command.ExecuteReader())
                     {
