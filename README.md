@@ -2,7 +2,7 @@
 
 Third console application in a series for learning .net. 
 
-Application is meant for keeping track of pushups done every day
+Application is meant for flashcard studying
 
 ## Requirements: 
  - [x] This is an application where the users will create Stacks of Flashcards.
@@ -25,9 +25,10 @@ Application is meant for keeping track of pushups done every day
 
 - Edit flashcards
   - ![EditMenu](Images/EditFlashcards.PNG)
-  - 1) User can crate a new stack of cards
-  - 2) Edit existing stacks or just list tham
+  - User can crate a new stack of cards
+  - Edit existing stacks
   - ![CRUD](Images/EditOptions.PNG)
+  - List existing stacks
   - ![CRUD](Images/ListStacks.PNG)
 
 - Study
@@ -38,15 +39,13 @@ Application is meant for keeping track of pushups done every day
 - Display reports
   -
 
-- Reporting is done with IDs so user can use the app as intended
+- Reporting is done for all the tables with different information, depending on request
   - ![CRUD](Images/Reporting.PNG)
-  - "ConsoleTableExt" library was used for table display
-
-- This project was also used to learn [unit testing](https://github.com/Walter4B/Coding-Tracker/tree/master/CodingTracker.UnitTests) 
+  - "ConsoleTableExt" library was used for table display 
 
 ## Tech stack:
-- Sqlite Server
-- Sqlite data reader
+- Sql Server
+- Sql data reader
 - SQL
 - .net 6.0
 
